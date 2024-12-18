@@ -1,0 +1,93 @@
+import axios from 'axios'
+import * as cheerio from 'cheerio';
+
+const handler = async (m, { text, conn }) => {
+  if (!text) return m.reply(`Example: . text2img cat`)
+
+let ahhh = await text2img(text)
+if (ahhh.lenght > 0 ) {
+    allImages.push(...ahhh.images);}
+ for (const item of ahhh[0].images.url1) {
+            // Send each file after loading is complete
+            conn.sendFile(m.chat, item, m);
+           }
+        
+
+}
+
+handler.help = ['text2image']
+handler.tags = ['ai']
+handler.command = ['text2imag', 'text2img']
+
+handler.limit = true
+
+export default handler
+
+
+/*const axios = require('axios')
+const cheerio = require('cheerio')*/
+
+
+const text2img = async (prompt) => {
+  try {
+    const encodedPrompt = encodeURIComponent(prompt);
+
+    const nganuData = await axios.post('https://hdstockimages.com/wp-admin/admin-ajax.php', 
+      `action=HDStockAiImageForm&cookie_ai=1&inputPrompt=${encodedPrompt}`, 
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Accept': '*/*',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      }
+    );
+
+    const $ = cheerio.load(nganuData.data);
+
+    const anuHeadings = [];
+    $('h3').each((i, elem) => {
+      const headingText = $(elem).text().trim();
+      if (headingText) {
+        anuHeadings.push(headingText);
+      }
+    });
+
+    const anuUrls = [];
+    $('figure.image-box a').each((i, elem) => {
+      const imgSrc = $(elem).attr('href');
+      if (imgSrc) {
+        anuUrls.push(imgSrc);
+      }
+    });
+
+    const result = [];
+    let anuIndex = 0;
+
+    anuHeadings.forEach(heading => {
+      const images = [];
+      for (let i = 1; i <= 4; i++) {
+        if (anuIndex < anuUrls.length) {
+          images.push({
+            [`url${i}`]: anuUrls[anuIndex++],
+            quality: 'HD'
+          });
+        } else {
+          break;
+        }
+      }
+      if (images.length > 0) {
+        result.push({
+          title: heading,
+          images: images,
+          type: 'text2img'
+        });
+      }
+    });
+
+    return JSON.stringify(result, null, 2);
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    return JSON.stringify({ error: 'Failed to fetch images' }, null, 2);
+  }
+};
