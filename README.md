@@ -1,4 +1,4 @@
 <h1 align="center">
-	<img width="250" src="media/nag.png" alt="Donations"><p>
+	<img width="250" src="media/output (1).png" alt="Donations"><p>
 </h1>
 
