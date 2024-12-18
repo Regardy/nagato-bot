@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# Tahuuuu
-=======
-# nagato-bot
->>>>>>> a92564999af9708d80f128519aa1bc641dee7ca5
+<h1 align="center">
+	<img width="250" src="media/nag.png" alt="Donations"><p>
+</h1>
+
